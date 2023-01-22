@@ -11,3 +11,5 @@ Tested up to 1000 clients
 Functionality for DDOS attacks and malware loading on slave machines
 
 Current version is optimized for a crypto mining network
+
+Shell function broken at the moment
