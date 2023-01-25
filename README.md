@@ -5,11 +5,10 @@ Features a semi-centralized manager oriented network structure
 
 Tested up to 1000 clients
 
-Functionality for DDOS attacks and malware loading on slave machines
+Functionality for DDOS attacks and shells on slave machines
 
 Current version is optimized for a crypto mining network
 
-***DDOS function broken at the moment
 
 
 Simple Console User Interface
