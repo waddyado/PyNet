@@ -1,13 +1,15 @@
 # PyNet
 Inefficient Botnet written in python
 
+***This project is still very much under development
+
 Features a semi-centralized manager oriented network structure
 
 Tested up to 1250 clients
 
 Functionality for DDOS attacks and shells on slave machines
 
-Current version is optimized for a crypto mining network
+Current version is optimized for a crypto mining network(doesnt actually perform any crypto mining)
 
 
 
@@ -23,4 +25,5 @@ Connect to any client
 
 
 *EDUCATIONAL PURPOSES ONLY
+
 *I AM NOT RESPONSIBLE FOR WHAT IS DONE WITH THIS TOOL
